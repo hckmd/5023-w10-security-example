@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for
+from flask_login import current_user, login_required
 
 from app import db
 from app.pet import bp
@@ -6,18 +7,21 @@ from app.models import Animal, Pet
 from .forms import AddPetForm, EditPetForm
 
 @bp.route('/')
+@login_required
 def my_pet_list():
     ''' A route for a list of all pets in the register . '''
-    pets = Pet.query.all()
+    pets = Pet.query.filter(Pet.owner_id == current_user.id).all()
     return render_template('pet_list.html', title = 'Pets', pets = pets)
 
 @bp.route('/<int:id>')
+@login_required
 def pet_details(id):
     ''' A route that shows the details for a specific pet in the register. '''
     pet = Pet.query.get_or_404(id)
     return render_template('pet_details.html', title = 'Pet details', pet = pet)
 
 @bp.route('/add', methods = ['GET', 'POST'])
+@login_required
 def pet_add():
     ''' A route for showing a form and processing form for adding a new pet. '''
     
@@ -28,6 +32,7 @@ def pet_add():
     if form.validate_on_submit():
         pet = Pet()
         form.populate_obj(obj=pet)
+        pet.owner_id = current_user.id
         db.session.add(pet)
         db.session.commit()
         # Return back to the view that shows the list of the user's pets
@@ -37,6 +42,7 @@ def pet_add():
     return render_template('pet_add.html', form = form, title = 'Add pet')
 
 @bp.route('/<int:id>/edit', methods = ['GET', 'POST'])
+@login_required
 def pet_edit(id):
     ''' A route for showing a form and processing form when editing a pet. '''
     pet = Pet.query.get_or_404(id)
