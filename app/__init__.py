@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+from flask_login import LoginManager
+
 app = Flask(__name__)
 
 # Set up configuration settings for connection to database
@@ -8,6 +10,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///register.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
+
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
 
 # The secret key here is used for demonstration purposes - DO NOT USE IN PRODUCTION
 app.config['SECRET_KEY'] = 'this-is-a-secret' 
@@ -18,6 +24,9 @@ app.register_blueprint(animal_bp, url_prefix='/animal')
 
 from app.pet import bp as pet_bp
 app.register_blueprint(pet_bp, url_prefix='/pet')
+
+from app.auth import bp as auth_bp
+app.register_blueprint(auth_bp, url_prefix='/auth')
 
 from app import routes
 from app.models import Animal, Pet, User
