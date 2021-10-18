@@ -38,12 +38,14 @@ def init_db():
 
     # Create Jill user with a pet Dog
     jill = User(username='jill', is_admin=False)
+    jill.password = 'spaghetti'
     desi = Pet(name='Desi', animal=dog)
     jill.pets.append(desi)
     db.session.add(jill)
 
     # Create Phil user (admin) with two pets
     phil = User(username='phil', is_admin=True)
+    phil.password = 'vegemite'
     ebony = Pet(name='Ebony', animal=cat)
     ivory = Pet(name='Ivory', animal=cat)
     phil.pets.append(ebony)
@@ -52,3 +54,5 @@ def init_db():
 
     # Save the changes made to the records database
     db.session.commit()
+
+
