@@ -20,7 +20,7 @@ from app.pet import bp as pet_bp
 app.register_blueprint(pet_bp, url_prefix='/pet')
 
 from app import routes
-from app.models import Animal, Pet
+from app.models import Animal, Pet, User
 
 @app.cli.command('init-db')
 def init_db():
@@ -36,15 +36,19 @@ def init_db():
     frog = Animal(name='Frog')
     db.session.add(frog)
 
-    # Create pet owned by Jill
-    desi = Pet(name='Desi', animal=dog, owner='jill')
-    db.session.add(desi)
+    # Create Jill user with a pet Dog
+    jill = User(username='jill', is_admin=False)
+    desi = Pet(name='Desi', animal=dog)
+    jill.pets.append(desi)
+    db.session.add(jill)
 
-    # Create pets owned by Phil
-    ebony = Pet(name='Ebony', animal=cat, owner='phil')
-    db.session.add(ebony)
-    ivory = Pet(name='Ivory', animal=cat, owner='phil')
-    db.session.add(ivory)
+    # Create Phil user (admin) with two pets
+    phil = User(username='phil', is_admin=True)
+    ebony = Pet(name='Ebony', animal=cat)
+    ivory = Pet(name='Ivory', animal=cat)
+    phil.pets.append(ebony)
+    phil.pets.append(ivory)
+    db.session.add(phil)
 
     # Save the changes made to the records database
     db.session.commit()
