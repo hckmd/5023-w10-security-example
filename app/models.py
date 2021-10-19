@@ -1,3 +1,4 @@
+from enum import unique
 from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -34,5 +35,5 @@ class Pet(db.Model):
 
 class Animal(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.Text)
+    name = db.Column(db.Text, unique = True)
 

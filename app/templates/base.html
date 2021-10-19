@@ -35,6 +35,13 @@
             </div>
         </nav>
         <div class="container">
+        {% if form %}​
+          {% if form.errors %}​​
+            {% for field, errors in form.errors.items() %}​​
+               <p>​{{ form[field].label }} {{ ', '.join(errors) }}​</p>​​
+            {% endfor %}​​
+          {% endif %}​
+        {% endif %}
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <ul class=flashes>
