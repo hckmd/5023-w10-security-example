@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,7 +18,7 @@ login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
 # The secret key here is used for demonstration purposes - DO NOT USE IN PRODUCTION
-app.config['SECRET_KEY'] = 'this-is-a-secret' 
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Registers for the blueprints for animal, pet and authentication
 from app.animal import bp as animal_bp
@@ -47,14 +49,14 @@ def init_db():
 
     # Create Jill user with a pet Dog
     jill = User(username='jill', is_admin=False)
-    jill.password = 'spaghetti'
+    jill.password = os.environ.get('JILL_PASSWORD')
     desi = Pet(name='Desi', animal=dog)
     jill.pets.append(desi)
     db.session.add(jill)
 
     # Create Phil user (admin) with two pets
     phil = User(username='phil', is_admin=True)
-    phil.password = 'vegemite'
+    phil.password = os.environ.get('PHIL_PASSWORD')
     ebony = Pet(name='Ebony', animal=cat)
     ivory = Pet(name='Ivory', animal=cat)
     phil.pets.append(ebony)
