@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 from app import db
@@ -46,6 +46,11 @@ def pet_add():
 def pet_edit(id):
     ''' A route for showing a form and processing form when editing a pet. '''
     pet = Pet.query.get_or_404(id)
+
+    if pet.owner_id != current_user.id:
+        flash('This is not your pet - you cannot edit it.')
+        return redirect(url_for('pet.my_pet_list'))
+
     form = EditPetForm(obj=pet)
     form.animal_id.choices = [(animal.id, animal.name) for animal in Animal.query.all()]
 
